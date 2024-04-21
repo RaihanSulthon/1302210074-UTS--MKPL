@@ -13,7 +13,9 @@ public class TaxFunction {
 	 * Jika pegawai sudah memiliki anak maka penghasilan tidak kena pajaknya ditambah sebesar Rp 4.500.000 per anak sampai anak ketiga.
 	 * 
 	 */
-	
+	public static final int SINGLE_NON_TAXABLE = 54000000;
+	public static final int MARRIED_NON_TAXABLE = SINGLE_NON_TAXABLE + 4500000;
+	public static final int PER_CHILD_NON_TAXABLE = 1500000;
 	
 	public static int calculateTax(int monthlySalary, int otherMonthlyIncome, int numberOfMonthWorking, int deductible, boolean isMarried, int numberOfChildren) {
 		
@@ -22,16 +24,16 @@ public class TaxFunction {
 		if (numberOfMonthWorking > 12) {
 			System.err.println("More than 12 month working per year");
 		}
-		
+		int nonTaxableIncome = SINGLE_NON_TAXABLE;
+		if (isMarried) {
+			nonTaxableIncome = MARRIED_NON_TAXABLE;
+		}
+
 		if (numberOfChildren > 3) {
 			numberOfChildren = 3;
 		}
 		
-		if (isMarried) {
-			tax = (int) Math.round(0.05 * (((monthlySalary + otherMonthlyIncome) * numberOfMonthWorking) - deductible - (54000000 + 4500000 + (numberOfChildren * 1500000))));
-		}else {
-			tax = (int) Math.round(0.05 * (((monthlySalary + otherMonthlyIncome) * numberOfMonthWorking) - deductible - 54000000));
-		}
+		tax = (int) Math.round(0.05 * (((monthlySalary + otherMonthlyIncome) * numberOfMonthWorking) - deductible - (nonTaxableIncome + (numberOfChildren * PER_CHILD_NON_TAXABLE))));
 		
 		if (tax < 0) {
 			return 0;
